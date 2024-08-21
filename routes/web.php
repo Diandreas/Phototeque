@@ -1,11 +1,20 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TermController;
+use App\Http\Controllers\TermHasImageController;
+use App\Http\Controllers\UserHasCommentController;
+use App\Http\Controllers\ImageController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
+
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -17,10 +26,19 @@ Route::middleware('auth')->group(function () {
     Route::post('user_has_comments', [UserHasCommentController::class, 'store'])->name('user_has_comments.store');
     Route::delete('user_has_comments/{user_id}/{comment_id}', [UserHasCommentController::class, 'destroy'])->name('user_has_comments.destroy');
 
+    Route::resource('terms', TermController::class);
+
     Route::get('term_has_images', [TermHasImageController::class, 'index'])->name('term_has_images.index');
     Route::get('term_has_images/create', [TermHasImageController::class, 'create'])->name('term_has_images.create');
     Route::post('term_has_images', [TermHasImageController::class, 'store'])->name('term_has_images.store');
     Route::delete('term_has_images/{term_id}/{image_id}', [TermHasImageController::class, 'destroy'])->name('term_has_images.destroy');
+
+    Route::resource('images', ImageController::class);
+
+    Route::resource('users', UserController::class);
+
+    Route::resource('comments', CommentController::class);
+    Route::get('/images/{image}/download', [HomeController::class, 'download'])->name('images.download');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

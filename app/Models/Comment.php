@@ -9,15 +9,20 @@ class Comment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['description', 'image_id'];
+    protected $fillable = ['description', 'image_id', 'user_id'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function image()
     {
         return $this->belongsTo(Image::class);
     }
-
     public function users()
     {
-        return $this->belongsToMany(User::class, 'user_has_comments', 'comment_id', 'user_id');
+        return $this->belongsToMany(User::class, 'user_has_comments');
     }
+
 }

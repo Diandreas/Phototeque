@@ -44,4 +44,31 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the role associated with the user.
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * Get the comments made by the user.
+     */
+//    public function comments()
+//    {
+//        return $this->hasMany(Comment::class);
+//    }
+    public function comments()
+    {
+        return $this->belongsToMany(Comment::class, 'user_has_comments');
+    }
+    /**
+     * Get the images liked by the user.
+     */
+    public function likedImages()
+    {
+        return $this->belongsToMany(Image::class, 'image_likes');
+    }
 }
