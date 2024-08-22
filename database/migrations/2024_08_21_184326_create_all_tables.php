@@ -40,18 +40,14 @@ return new class extends Migration
         // Table `comments`
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->text('description'); // Description sans limite
-            $table->foreignId('image_id')->constrained('images')->onDelete('no action')->onUpdate('no action');
+            $table->string('description', 255);
+            $table->unsignedBigInteger('image_id');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('image_id')->references('id')->on('images')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
 
-        // Table `user_has_comments`
-        Schema::create('user_has_comments', function (Blueprint $table) {
-            $table->string('user_id', 45);
-            $table->foreignId('comment_id')->constrained('comments')->onDelete('no action')->onUpdate('no action');
-            $table->primary(['user_id', 'comment_id']);
-            $table->timestamps();
-        });
 
         // Table `term_has_images`
         Schema::create('term_has_images', function (Blueprint $table) {
