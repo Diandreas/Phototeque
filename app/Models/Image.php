@@ -9,8 +9,25 @@ class Image extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'path', 'size', 'description'];
-
+    protected $fillable = [
+        'name',
+        'identification_number',
+        'creation_date',
+        'author',
+        'source',
+        'support',
+        'dimensions',
+        'color',
+        'technique',
+        'description',
+        'main_subject',
+        'represented_elements',
+        'actions_represented',
+        'context',
+        'keywords',
+        'path',
+        'size',
+    ];
     public function comments()
     {
         return $this->hasMany(Comment::class);

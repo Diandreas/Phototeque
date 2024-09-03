@@ -15,14 +15,14 @@ class ImageController extends Controller
     public function index(Request $request)
     {
         $query = $request->input('search');
+        $images = Image::query();
+
         if ($query) {
-            $images = Image::where('name', 'like', "%$query%")
-                ->orWhere('description', 'like', "%$query%")
-                ->with('terms')
-                ->paginate(12);
-        } else {
-            $images = Image::with('terms')->paginate(12);
+            $images->where('name', 'like', "%$query%")
+                ->orWhere('description', 'like', "%$query%");
         }
+
+        $images = $images->with('terms')->paginate(12);
 
         return view('images.index', compact('images'));
     }
@@ -41,20 +41,31 @@ class ImageController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'identification_number' => 'required|string|max:255|unique:images',
+            'creation_date' => 'required|date',
+            'author' => 'required|string|max:255',
+            'source' => 'required|string|max:255',
+            'support' => 'required|string|max:255',
+            'dimensions' => 'required|string|max:255',
+            'color' => 'required|string|max:255',
+            'technique' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'main_subject' => 'required|string|max:255',
+            'represented_elements' => 'required|string',
+            'actions_represented' => 'required|string',
+            'context' => 'required|string',
+            'keywords' => 'required|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $imagePath = $request->file('image')->store('images', 'public');
 
-        Image::create([
-            'name' => $request->name,
+        Image::create(array_merge($validatedData, [
             'path' => $imagePath,
             'size' => $request->file('image')->getSize(),
-            'description' => $request->description,
-        ]);
+        ]));
 
         return redirect()->route('images.index')->with('success', 'Image créée avec succès.');
     }
@@ -66,10 +77,9 @@ class ImageController extends Controller
     {
         $image->load('comments.users', 'terms');
 
-        return view('images.show', [
-            'image' => $image
-        ]);
+        return view('images.show', compact('image'));
     }
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -83,10 +93,23 @@ class ImageController extends Controller
      */
     public function update(Request $request, Image $image)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'identification_number' => 'required|string|max:255|unique:images,identification_number,' . $image->id,
+            'creation_date' => 'required|date',
+            'author' => 'required|string|max:255',
+            'source' => 'required|string|max:255',
+            'support' => 'required|string|max:255',
+            'dimensions' => 'required|string|max:255',
+            'color' => 'required|string|max:255',
+            'technique' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'main_subject' => 'required|string|max:255',
+            'represented_elements' => 'required|string',
+            'actions_represented' => 'required|string',
+            'context' => 'required|string',
+            'keywords' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($request->hasFile('image')) {
@@ -96,9 +119,7 @@ class ImageController extends Controller
             $image->size = $request->file('image')->getSize();
         }
 
-        $image->name = $request->name;
-        $image->description = $request->description;
-        $image->save();
+        $image->update($validatedData);
 
         return redirect()->route('images.index')->with('success', 'Image mise à jour avec succès.');
     }
@@ -113,6 +134,10 @@ class ImageController extends Controller
 
         return redirect()->route('images.index')->with('success', 'Image supprimée avec succès.');
     }
+
+    /**
+     * Download the specified resource.
+     */
     public function download(Image $image)
     {
         $filePath = $image->path;

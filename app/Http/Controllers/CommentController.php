@@ -27,10 +27,15 @@ class CommentController extends Controller
             'image_id' => 'required|exists:images,id',
         ]);
 
-        Comment::create($request->all());
+        // Ajouter l'ID de l'utilisateur connecté aux données du commentaire
+        $commentData = $request->all();
+        $commentData['user_id'] = auth()->id();
 
-        return redirect()->route('comments.index')->with('success', 'Comment created successfully.');
+        Comment::create($commentData);
+
+        return redirect()->back()->with('success', 'Comment created successfully.');
     }
+
 
     public function show(Comment $comment)
     {
@@ -52,13 +57,13 @@ class CommentController extends Controller
 
         $comment->update($request->all());
 
-        return redirect()->route('comments.index')->with('success', 'Comment updated successfully.');
+        return redirect()->back()->with('success', 'Comment updated successfully.');
     }
 
     public function destroy(Comment $comment)
     {
         $comment->delete();
 
-        return redirect()->route('comments.index')->with('success', 'Comment deleted successfully.');
+        return redirect()->back()->with('success', 'Comment deleted successfully.');
     }
 }
