@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProposedModificationController;
 use App\Http\Controllers\TermController;
 use App\Http\Controllers\TermHasImageController;
 use App\Http\Controllers\UserHasCommentController;
@@ -45,7 +46,8 @@ Route::middleware('auth')->group(function () {
 
     // Route pour télécharger une image
     Route::get('/images/{image}/download', [ImageController::class, 'download'])->name('images.download');
-
+    Route::post('/modifications', [ProposedModificationController::class, 'store'])->name('modifications.store');
+    Route::patch('/modifications/{modification}', [ProposedModificationController::class, 'update'])->name('modifications.update');
     // Routes pour le profil de l'utilisateur
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

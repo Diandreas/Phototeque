@@ -13,59 +13,53 @@
         break-inside: avoid;
     }
 
-    .card-img-top {
-        width: 100%;
-        height: auto;
-        display: block;
-        transition: transform 0.3s ease;
-    }
-
-    .card {
-        position: relative;
-        overflow: hidden;
-        transition: box-shadow 0.3s ease;
-    }
-
-    .card:hover {
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    }
-
     .card-details {
         position: absolute;
         bottom: 0;
         left: 0;
         right: 0;
-        background: rgba(0, 0, 0, 0.6);
+        background: rgba(0, 0, 0, 0.7);
         color: white;
         padding: 1rem;
         opacity: 0;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        transform: translateY(100%);
     }
 
     .card:hover .card-details {
         opacity: 1;
+        transform: translateY(0);
     }
 
-    #backToTop {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        display: none;
-        z-index: 1000;
-        transition: opacity 0.3s ease-in-out;
-        opacity: 0;
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.5rem;
+        margin: 0.2rem;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        display: inline-block;
     }
 
-    #backToTop.show {
-        opacity: 1;
+    .badge:hover {
+        background-color: #5a6268;
+        transform: scale(1.05);
     }
 
-    .like-button, .comment-button {
-        transition: transform 0.2s ease;
+    .terms-container {
+        margin-top: 0.5rem;
+        max-height: 3.6em;
+        overflow-y: auto;
     }
 
-    .like-button:hover, .comment-button:hover {
-        transform: scale(1.1);
+    .card-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 0.5rem;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
     }
 </style>
 
@@ -155,18 +149,21 @@
                         <img src="{{ asset('storage/' . $image->path) }}" class="card-img-top" alt="{{ $image->name }}">
                         <div class="card-details">
                             <h5 class="card-title">{{ $image->name }}</h5>
-                            <div class="d-flex justify-content-between">
-                                <div class="d-flex align-items-center">
-                                    <button class="btn btn-sm btn-outline-secondary me-2 like-button" data-image-id="{{ $image->id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Like this image">
-                                        <i class="bi bi-heart"></i> <span class="likes-count">{{ $image->likes_count }}</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary comment-button" data-image-id="{{ $image->id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Comment on this image">
+                            <div class="card-actions">
+                                <div>
+
+                                    <button class="btn btn-sm btn-outline-light comment-button" data-image-id="{{ $image->id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Comment on this image">
                                         <i class="bi bi-chat"></i> <span class="comments-count">{{ $image->comments_count }}</span>
                                     </button>
                                 </div>
-                                <div>
-                                    <a href="{{ route('images.show', $image->id) }}" class="btn btn-primary btn-sm">Voir plus</a>
-                                </div>
+                                <a href="{{ route('images.show', $image->id) }}" class="btn btn-sm btn-primary">Voir plus</a>
+                            </div>
+                            <div class="terms-container">
+                                @foreach($image->terms as $term)
+                                    <a href="{{ route('home', ['category' => $term->name]) }}" class="badge bg-secondary text-decoration-none">
+                                        {{ $term->name }}
+                                    </a>
+                                @endforeach
                             </div>
                         </div>
                     </div>

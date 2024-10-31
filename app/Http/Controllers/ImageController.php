@@ -41,35 +41,83 @@ class ImageController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
-            'identification_number' => 'required|string|max:255|unique:images',
             'creation_date' => 'required|date',
             'author' => 'required|string|max:255',
             'source' => 'required|string|max:255',
-            'support' => 'required|string|max:255',
-            'dimensions' => 'required|string|max:255',
-            'color' => 'required|string|max:255',
-            'technique' => 'required|string|max:255',
             'description' => 'nullable|string',
             'main_subject' => 'required|string|max:255',
-            'represented_elements' => 'required|string',
-            'actions_represented' => 'required|string',
-            'context' => 'required|string',
-            'keywords' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'terms' => 'nullable|array',
         ]);
 
-        $imagePath = $request->file('image')->store('images', 'public');
+        $image = $request->file('image');
+        $imagePath = $image->store('images', 'public');
 
-        Image::create(array_merge($validatedData, [
+        // Obtenir les dimensions de l'image
+        $dimensions = getimagesize($image->path());
+        $width = $dimensions[0];
+        $height = $dimensions[1];
+
+        // Déterminer si l'image est en couleur ou en noir et blanc
+        $colorType = $this->getColorType($image->path());
+
+        // Générer un numéro d'identification unique
+        $identificationNumber = $this->generateUniqueIdentificationNumber();
+
+        $newImage = Image::create([
+            'name' => $request->name,
+            'identification_number' => $identificationNumber,
+            'creation_date' => $request->creation_date,
+            'author' => $request->author,
+            'source' => $request->source,
+            'support' => 'Numérique',
+            'dimensions' => $width . 'x' . $height,
+            'color' => $colorType,
+            'description' => $request->description,
+            'main_subject' => $request->main_subject,
             'path' => $imagePath,
-            'size' => $request->file('image')->getSize(),
-        ]));
+            'size' => $image->getSize(),
+        ]);
 
-        return redirect()->route('images.index')->with('success', 'Image créée avec succès.');
+        if ($request->has('terms')) {
+            $newImage->terms()->attach($request->terms);
+        }
+
+        return redirect()->route('images.index')->with('success', 'Image ajoutée avec succès.');
     }
+    private function generateUniqueIdentificationNumber()
+    {
+        do {
+            $number = strtoupper(Str::random(8)); // Génère une chaîne aléatoire de 8 caractères
+        } while (Image::where('identification_number', $number)->exists());
 
+        return $number;
+    }
+    private function getColorType($imagePath): string
+    {
+        $image = imagecreatefromstring(file_get_contents($imagePath));
+        $width = imagesx($image);
+        $height = imagesy($image);
+
+        for ($x = 0; $x < $width; $x++) {
+            for ($y = 0; $y < $height; $y++) {
+                $rgb = imagecolorat($image, $x, $y);
+                $r = ($rgb >> 16) & 0xFF;
+                $g = ($rgb >> 8) & 0xFF;
+                $b = $rgb & 0xFF;
+
+                if ($r != $g || $g != $b) {
+                    imagedestroy($image);
+                    return 'Couleur';
+                }
+            }
+        }
+
+        imagedestroy($image);
+        return 'Noir et blanc';
+    }
     /**
      * Display the specified resource.
      */

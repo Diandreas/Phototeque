@@ -13,7 +13,7 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Image::withCount('comments');
+        $query = Image::withCount('comments')->with('terms');
 
         // Recherche
         if ($request->has('search') && $request->input('search') !== '') {
@@ -39,10 +39,7 @@ class HomeController extends Controller
             ]);
         }
 
-        $images = $query->with(['terms', 'comments'])
-            ->orderByDesc('created_at')
-            ->get();
-
+        $images = $query->orderByDesc('created_at')->get();
         $categories = Term::all();
 
         return view('home', [

@@ -16,15 +16,15 @@ return new class extends Migration
             $table->date('creation_date')->nullable()->after('identification_number');
             $table->string('author', 255)->after('creation_date');
             $table->string('source', 255)->after('author');
-            $table->string('support', 255)->after('source');
+            $table->string('support', 255)->after('source')->nullable();
             $table->string('dimensions', 255)->after('support');
-            $table->string('color', 255)->after('dimensions');
-            $table->string('technique', 255)->after('color');
-            $table->string('main_subject', 255)->after('technique');
-            $table->string('represented_elements')->after('main_subject');
-            $table->string('actions_represented')->after('represented_elements');
-            $table->string('context')->after('actions_represented');
-            $table->string('keywords')->after('context');
+            $table->string('color', 255)->after('dimensions')->nullable();
+            $table->string('technique', 255)->after('color')->nullable();
+            $table->string('main_subject', 255)->after('technique')->nullable();
+            $table->string('represented_elements')->after('main_subject')->nullable();
+            $table->string('actions_represented')->after('represented_elements')->nullable();
+            $table->string('context')->after('actions_represented')->nullable();
+            $table->string('keywords')->after('context')->nullable();
         });
     }
 

@@ -20,18 +20,15 @@
                     @csrf
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="name" class="form-label">Nom de l'image</label>
+                            <label for="name" class="form-label">Nom de l'image *</label>
                             <input type="text" class="form-control" id="name" name="name" required>
                         </div>
-                        <div class="col-md-6">
-                            <label for="identification_number" class="form-label">Numéro d'identification</label>
-                            <input type="text" class="form-control" id="identification_number" name="identification_number" required>
-                        </div>
+
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="creation_date" class="form-label">Date de création</label>
+                            <label for="creation_date" class="form-label">Date de création *</label>
                             <input type="date" class="form-control" id="creation_date" name="creation_date" required>
                         </div>
                         <div class="col-md-6">
@@ -45,26 +42,6 @@
                             <label for="source" class="form-label">Source (origine de l'image)</label>
                             <input type="text" class="form-control" id="source" name="source" required>
                         </div>
-                        <div class="col-md-6">
-                            <label for="support" class="form-label">Support de l'image</label>
-                            <input type="text" class="form-control" id="support" name="support" required>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="dimensions" class="form-label">Dimensions</label>
-                            <input type="text" class="form-control" id="dimensions" name="dimensions" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="color" class="form-label">Couleur</label>
-                            <input type="text" class="form-control" id="color" name="color" required>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="technique" class="form-label">Technique utilisée</label>
-                        <input type="text" class="form-control" id="technique" name="technique" required>
                     </div>
 
                     <div class="mb-3">
@@ -78,27 +55,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="represented_elements" class="form-label">Personnes, objets, lieux représentés</label>
-                        <textarea class="form-control" id="represented_elements" name="represented_elements" rows="3" required></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="actions_represented" class="form-label">Actions représentées</label>
-                        <textarea class="form-control" id="actions_represented" name="actions_represented" rows="3" required></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="context" class="form-label">Contexte historique, géographique ou social</label>
-                        <textarea class="form-control" id="context" name="context" rows="3" required></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="keywords" class="form-label">Mots-clés pertinents pour la recherche</label>
-                        <textarea class="form-control" id="keywords" name="keywords" rows="3" required></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="image" class="form-label">Image</label>
+                        <label for="image" class="form-label">Image *</label>
                         <input type="file" class="form-control" id="image" name="image" required>
                     </div>
 

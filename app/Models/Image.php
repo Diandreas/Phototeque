@@ -37,4 +37,8 @@ class Image extends Model
     {
         return $this->belongsToMany(Term::class, 'term_has_images', 'image_id', 'term_id');
     }
+    public function proposedModifications()
+    {
+        return $this->hasMany(ProposedModification::class);
+    }
 }
